@@ -1,0 +1,60 @@
+x-common:
+  &common
+  env_file: .env
+  networks:
+    - bogdan
+
+services:
+  postgres:
+    <<: [ *common ]
+    container_name: BM_PG
+    image: postgres:$PG_VERSION
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: $PG_USERNAME
+      POSTGRES_PASSWORD: $PG_PASSWORD
+    restart: always
+    ports:
+      - $PG_PORT:5432
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "postgres"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+  minio:
+    <<: [ *common ]
+    container_name: BM_MINIO
+    image: minio/minio:$MINIO_VERSION
+    shm_size: 128mb
+    environment:
+      MINIO_ROOT_USER: $MINIO_USERNAME
+      MINIO_ROOT_PASSWORD: $MINIO_PASSWORD
+    restart: always
+    ports:
+      - $MINIO_API_PORT:9000
+      - $MINIO_CLI_PORT:9001
+    command: server --console-address ":9001" /data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+  
+  mc:
+    <<: [ *common ]
+    container_name: BM_MC
+    image: minio/mc:$MC_VERSION
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: /bin/sh -c "
+        mc alias set m http://minio:9000 $MINIO_USERNAME $MINIO_PASSWORD;
+        mc mb m/example.bucket;
+      "
+
+networks:
+  bogdan:
+    driver: bridge
