@@ -1,0 +1,28 @@
+x-common:
+  &common
+  env_file: .env
+  networks:
+    - bogdan
+
+services:
+  postgres:
+    <<: [ *common ]
+    container_name: BM_PG
+    image: postgres:$PG_VERSION
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: $PG_USERNAME
+      POSTGRES_PASSWORD: $PG_PASSWORD
+    restart: always
+    ports:
+      - $PG_PORT:5432
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "postgres"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+networks:
+  bogdan:
+    driver: bridge
