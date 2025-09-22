@@ -1,13 +1,12 @@
-PUBLISHER_NAME=vpr43
-BACKEND_IMAGE_NAME=bogdan-backend
-VERSION=1.0
+ifneq (,$(wildcard ./.env))
+    include .env
+    export
+endif
 
 build:
-	@echo Start building...
-	@docker build -t $(PUBLISHER_NAME)/$(BACKEND_IMAGE_NAME):$(VERSION) .
+	@docker build -t $(BACKEND_PUBLISHER_NAME)/$(BACKEND_IMAGE_NAME):$(BACKEND_VERSION) .
 
 up:
-	@echo Starting containers...
 	docker compose up -d
 
 down:
