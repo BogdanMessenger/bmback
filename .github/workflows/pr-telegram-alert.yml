@@ -15,31 +15,12 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID }}
         run: |
-          # Собираем данные из события PR
           PR_TITLE="${{ github.event.pull_request.title }}"
           PR_AUTHOR="${{ github.event.pull_request.user.login }}"
           PR_SOURCE_BRANCH="${{ github.event.pull_request.head.ref }}"
           PR_TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
           PR_URL="${{ github.event.pull_request.html_url }}"
 
-          # # Получаем список ревьюеров (если есть)
-          # REVIEWERS=""
-          # for reviewer in ${{ toJSON(github.event.pull_request.requested_reviewers) }}; do
-          #   # Простой способ — если массив не пуст, покажем количество
-          #   # Для детального списка нужно парсить JSON, но в bash это сложно
-          #   # Поэтому сделаем через jq, если нужно — см. ниже альтернативу
-          #   break
-          # done
-
-          # # Альтернатива: просто показываем количество ревьюеров
-          # REVIEWER_COUNT=$(echo '${{ toJSON(github.event.pull_request.requested_reviewers) }}' | jq 'length' 2>/dev/null || echo "0")
-          # if [ "$REVIEWER_COUNT" -gt 0 ]; then
-          #   REVIEWERS_TEXT="👥 *Ревьюеры:* $REVIEWER_COUNT человек(а)"
-          # else
-          #   REVIEWERS_TEXT="👥 *Ревьюеры:* пока не назначены"
-          # fi
-
-          # Формируем сообщение
           MESSAGE="🆕 *Новый Pull Request!*%0A%0A"
           MESSAGE+="📝 *Название:* $PR_TITLE%0A"
           MESSAGE+="👤 *Автор:* @$PR_AUTHOR%0A"
