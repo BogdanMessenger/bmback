@@ -16,7 +16,7 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID }}
         run: |
           escape_markdown() {
-            echo "$1" | sed 's/[][\_*()~`>#+\-=|{}.!]/\\&/g'
+            echo "$1" | sed 's/[][\_*()~`>#+=|{}.!-]/\\&/g'
           }
 
           PR_TITLE="${{ github.event.pull_request.title }}"
