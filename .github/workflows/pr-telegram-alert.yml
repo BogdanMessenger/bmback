@@ -15,7 +15,7 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          MESSAGE="🆕 *Новый PR в ветку \`main\`!*%0A%0A📝 *Название:* ${{ github.event.pull_request.title }}%0A👤 *Автор:* @${{ github.event.pull_request.user.login }}%0A🔗 *Ссылка:* ${{ github.event.pull_request.html_url }}%0A%0A_Создано через GitHub Actions_"
+          MESSAGE="Hello, world!"
 
           curl -X POST \
             "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
