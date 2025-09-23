@@ -26,8 +26,8 @@ jobs:
           PR_URL="${{ github.event.pull_request.html_url }}"
 
           MESSAGE=""
-          MESSAGE+="[$(escape_markdown $PR_TITLE)]($PR_URL)"
-          MESSAGE+="`$(escape_markdown $PR_TARGET_BRANCH)` ← `$(escape_markdown $PR_SOURCE_BRANCH)`%0A"
+          MESSAGE+="[$(escape_markdown $PR_TITLE)]($PR_URL)%0A"
+          MESSAGE+="$(escape_markdown $PR_TARGET_BRANCH) ← $(escape_markdown $PR_SOURCE_BRANCH)%0A"
           MESSAGE+="Author: $PR_AUTHOR"
 
           # MESSAGE+=$(escape_markdown $PR_TITLE)
