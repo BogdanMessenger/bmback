@@ -22,7 +22,7 @@ jobs:
           PR_URL="${{ github.event.pull_request.html_url }}"
 
           MESSAGE=""
-          MESSAGE+="*Название:* $PR_TITLE"
+          MESSAGE+="Название: $PR_TITLE"
           # MESSAGE+="🆕 *Новый Pull Request!*%0A%0A"
           # MESSAGE+="📝 *Название:* $PR_TITLE%0A"
           # MESSAGE+="👤 *Автор:* @$PR_AUTHOR%0A"
