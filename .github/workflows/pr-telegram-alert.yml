@@ -1,4 +1,4 @@
-name: Notify Telegram on PR to main
+name: Notify Telegram on PR
 
 on:
   pull_request:
