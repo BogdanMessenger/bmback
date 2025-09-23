@@ -21,6 +21,8 @@ jobs:
           PR_TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
           PR_URL="${{ github.event.pull_request.html_url }}"
 
+          echo Title is: $PR_TITLE
+
           MESSAGE=""
           MESSAGE+="Abobabebebe"
           # MESSAGE+="🆕 *Новый Pull Request!*%0A%0A"
