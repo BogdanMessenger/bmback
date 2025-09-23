@@ -13,7 +13,7 @@ jobs:
       - name: Send Telegram Notification
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_CHAT_ID: ${{ variables.TELEGRAM_CHAT_ID }}
         run: |
           MESSAGE="Hello, world!"
 
