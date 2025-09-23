@@ -1,0 +1,50 @@
+name: Notify Telegram on PR
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches:
+      - main
+
+jobs:
+  notify-telegram:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Telegram Notification
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID }}
+          TELEGRAM_THREAD_ID: ${{ vars.TELEGRAM_THREAD_ID }}
+        run: |
+          escape_markdown() {
+            echo "$1" | sed 's/[][\_*()~`>#+=|{}.!-]/\\&/g'
+          }
+
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+          PR_SOURCE_BRANCH="${{ github.event.pull_request.head.ref }}"
+          PR_TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
+          PR_URL="${{ github.event.pull_request.html_url }}"
+
+          MESSAGE=""
+          MESSAGE+="[$(escape_markdown $PR_TITLE)]($PR_URL)%0A"
+          MESSAGE+="$(escape_markdown $PR_TARGET_BRANCH) ← $(escape_markdown $PR_SOURCE_BRANCH)%0A"
+          MESSAGE+="Author: $PR_AUTHOR"
+
+          # MESSAGE+=$(escape_markdown $PR_TITLE)
+          # MESSAGE+="🆕 *Новый Pull Request!*%0A%0A"
+          # MESSAGE+="📝 *Название:* $PR_TITLE%0A"
+          # MESSAGE+="👤 *Автор:* @$PR_AUTHOR%0A"
+          # MESSAGE+="🌿 *Из ветки:* \`$PR_SOURCE_BRANCH\`%0A"
+          # MESSAGE+="➡️ *В ветку:* \`$PR_TARGET_BRANCH\`%0A"
+          # MESSAGE+="$REVIEWERS_TEXT%0A"
+          # MESSAGE+="🔗 [Открыть PR]($PR_URL)%0A"
+          # MESSAGE+="_Отправлено через GitHub Actions_"
+
+          curl -X POST \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d "chat_id=$TELEGRAM_CHAT_ID" \
+            -d "message_thread_id=$TELEGRAM_THREAD_ID" \
+            -d "text=${MESSAGE}" \
+            -d "parse_mode=MarkdownV2" \
+            -d "disable_web_page_preview=true"
