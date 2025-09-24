@@ -30,7 +30,7 @@ jobs:
           MESSAGE="<b>BACKEND</b>%0A"
           MESSAGE+="<code>$PR_TARGET_BRANCH</code> ← <code>$PR_SOURCE_BRANCH</code>%0A"
           MESSAGE+="<a href=\"$PR_URL\">$PR_TITLE</a>%0A"
-          MESSAGE+="Author: <b>$PR_AUTHOR</b>"
+          MESSAGE+="By: <b>$PR_AUTHOR</b>"
 
           curl -X POST \
             "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
