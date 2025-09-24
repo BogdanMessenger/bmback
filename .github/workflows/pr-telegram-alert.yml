@@ -27,15 +27,20 @@ jobs:
           PR_TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
           PR_URL="${{ github.event.pull_request.html_url }}"
 
-          MESSAGE="**BACKEND**"
-          MESSAGE+="[$(escape_markdown $PR_TITLE)]($PR_URL)%0A"
-          MESSAGE+="`$(escape_markdown $PR_TARGET_BRANCH)` ← `$(escape_markdown $PR_SOURCE_BRANCH)`%0A"
-          MESSAGE+="Author: *$PR_AUTHOR*"
+          # MESSAGE="**BACKEND**"
+          # MESSAGE+="[$(escape_markdown $PR_TITLE)]($PR_URL)%0A"
+          # MESSAGE+="`$(escape_markdown $PR_TARGET_BRANCH)` ← `$(escape_markdown $PR_SOURCE_BRANCH)`%0A"
+          # MESSAGE+="Author: *$PR_AUTHOR*"
+
+          MESSAGE="<b>BACKEND</b></br>""
+          MESSAGE+="<a href=\"$PR_URL\">$PR_TITLE</a></br>"
+          MESSAGE+="<pre>$PR_TARGET_BRANCH</pre> ← <pre>$PR_SOURCE_BRANCH</pre></br>"
+          MESSAGE+="Author: <b>$PR_AUTHOR</b>"
 
           curl -X POST \
             "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             -d "chat_id=$TELEGRAM_CHAT_ID" \
             -d "message_thread_id=$TELEGRAM_THREAD_ID" \
             -d "text=${MESSAGE}" \
-            -d "parse_mode=MarkdownV2" \
+            -d "parse_mode=HTML" \
             -d "disable_web_page_preview=true"
