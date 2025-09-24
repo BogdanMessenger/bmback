@@ -33,8 +33,8 @@ jobs:
           # MESSAGE+="Author: *$PR_AUTHOR*"
 
           MESSAGE="<b>BACKEND</b></br>"
-          MESSAGE+="<a href=\"$PR_URL\">$PR_TITLE</a></br>"
-          MESSAGE+="<pre>$PR_TARGET_BRANCH</pre> ← <pre>$PR_SOURCE_BRANCH</pre></br>"
+          MESSAGE+="<a href=\"$(escape_markdown $PR_URL)\">$(escape_markdown $PR_TITLE)</a></br>"
+          MESSAGE+="<pre>$PR_TARGET_BRANCH</pre> ← <pre>$(escape_markdown $PR_SOURCE_BRANCH)</pre></br>"
           MESSAGE+="Author: <b>$PR_AUTHOR</b>"
 
           curl -X POST \
