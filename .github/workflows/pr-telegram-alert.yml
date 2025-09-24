@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, reopened]
     branches:
-      - main
+      - dev
 
 jobs:
   notify-telegram:
@@ -26,20 +26,10 @@ jobs:
           PR_TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
           PR_URL="${{ github.event.pull_request.html_url }}"
 
-          MESSAGE=""
+          MESSAGE="**BACKEND**"
           MESSAGE+="[$(escape_markdown $PR_TITLE)]($PR_URL)%0A"
-          MESSAGE+="$(escape_markdown $PR_TARGET_BRANCH) ← $(escape_markdown $PR_SOURCE_BRANCH)%0A"
-          MESSAGE+="Author: $PR_AUTHOR"
-
-          # MESSAGE+=$(escape_markdown $PR_TITLE)
-          # MESSAGE+="🆕 *Новый Pull Request!*%0A%0A"
-          # MESSAGE+="📝 *Название:* $PR_TITLE%0A"
-          # MESSAGE+="👤 *Автор:* @$PR_AUTHOR%0A"
-          # MESSAGE+="🌿 *Из ветки:* \`$PR_SOURCE_BRANCH\`%0A"
-          # MESSAGE+="➡️ *В ветку:* \`$PR_TARGET_BRANCH\`%0A"
-          # MESSAGE+="$REVIEWERS_TEXT%0A"
-          # MESSAGE+="🔗 [Открыть PR]($PR_URL)%0A"
-          # MESSAGE+="_Отправлено через GitHub Actions_"
+          MESSAGE+="`$(escape_markdown $PR_TARGET_BRANCH)` ← `$(escape_markdown $PR_SOURCE_BRANCH)`%0A"
+          MESSAGE+="Author: *$PR_AUTHOR*"
 
           curl -X POST \
             "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
