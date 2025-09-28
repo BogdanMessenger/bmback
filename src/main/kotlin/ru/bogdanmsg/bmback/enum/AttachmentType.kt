@@ -1,4 +1,4 @@
-package ru.bogdanmsg.bmback.enums
+package ru.bogdanmsg.bmback.enum
 
 enum class AttachmentType {
     IMAGE,

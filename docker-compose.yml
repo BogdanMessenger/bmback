@@ -5,14 +5,26 @@ x-common:
     - bogdan
 
 services:
+  app:
+    <<: [ *common ]
+    build:
+      dockerfile: ./Dockerfile
+      context: ./
+    container_name: BM_APP
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8088:8088"
   postgres:
     <<: [ *common ]
-    container_name: BM_PG
-    image: postgres:$PG_VERSION
+    container_name: BM_POSTGRES
+    image: postgres:${PG_VERSION}
     shm_size: 128mb
     environment:
-      POSTGRES_USER: $PG_USERNAME
-      POSTGRES_PASSWORD: $PG_PASSWORD
+      POSTGRES_USER: ${PG_USERNAME}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
     restart: always
     ports:
       - $PG_PORT:5432
@@ -26,7 +38,7 @@ services:
   minio:
     <<: [ *common ]
     container_name: BM_MINIO
-    image: minio/minio:$MINIO_VERSION
+    image: minio/minio:${MINIO_VERSION}
     shm_size: 128mb
     environment:
       MINIO_ROOT_USER: $MINIO_USERNAME
@@ -46,7 +58,7 @@ services:
   mc:
     <<: [ *common ]
     container_name: BM_MC
-    image: minio/mc:$MC_VERSION
+    image: minio/mc:${MC_VERSION}
     depends_on:
       minio:
         condition: service_healthy

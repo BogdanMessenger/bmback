@@ -1,4 +1,4 @@
-package ru.bogdanmsg.bmback.entities
+package ru.bogdanmsg.bmback.entity
 
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
