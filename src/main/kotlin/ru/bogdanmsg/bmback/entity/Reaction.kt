@@ -5,13 +5,13 @@ import jakarta.persistence.Entity
 import jakarta.persistence.ManyToOne
 
 @Entity
-class ReactionEntity(
+class Reaction(
     @Column(nullable = false)
     var symbol: String,
 
     @ManyToOne()
-    val messageEntity: MessageEntity,
+    val message: Message,
 
     @ManyToOne()
-    val userEntity: UserEntity
-) : BaseEntity()
+    val user: User
+) : Base()

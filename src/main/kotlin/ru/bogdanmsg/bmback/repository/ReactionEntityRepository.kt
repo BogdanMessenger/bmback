@@ -1,7 +1,7 @@
 package ru.bogdanmsg.bmback.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
-import ru.bogdanmsg.bmback.entity.ReactionEntity
+import ru.bogdanmsg.bmback.entity.Reaction
 import java.util.*
 
-interface ReactionEntityRepository : JpaRepository<ReactionEntity, UUID>
+interface ReactionEntityRepository : JpaRepository<Reaction, UUID>

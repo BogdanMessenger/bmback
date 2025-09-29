@@ -3,18 +3,16 @@ package ru.bogdanmsg.bmback.entity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.ManyToOne
-import java.util.Date
+import java.time.LocalDateTime
 
 @Entity
-class AvatarEntity(
-
+class Avatar(
     @Column(nullable = false)
     var path: String,
 
     @Column(nullable = false)
-    val date: Date,
+    val uploadedAt: LocalDateTime,
 
     @ManyToOne()
-    val userEntity: UserEntity,
-
-    ) : BaseEntity()
+    val user: User,
+) : Base()

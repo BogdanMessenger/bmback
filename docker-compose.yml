@@ -7,16 +7,15 @@ x-common:
 services:
   app:
     <<: [ *common ]
-    build:
-      dockerfile: ./Dockerfile
-      context: ./
-    container_name: BM_APP
+    build: .
+    container_name: BM_API
     restart: always
     depends_on:
       postgres:
         condition: service_healthy
     ports:
-      - "8088:8088"
+      - $API_PORT:8088
+
   postgres:
     <<: [ *common ]
     container_name: BM_POSTGRES
