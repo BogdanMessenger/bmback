@@ -15,4 +15,4 @@ class Avatar(
 
     @ManyToOne()
     val user: User,
-) : Base()
+) : BaseEntity()

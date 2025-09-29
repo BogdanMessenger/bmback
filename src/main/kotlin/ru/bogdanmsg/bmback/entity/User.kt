@@ -30,4 +30,4 @@ class User(
 
     @ManyToMany(mappedBy = "user", fetch = FetchType.LAZY)
     val chat: MutableList<Chat> = mutableListOf()
-) : Base()
+) : BaseEntity()

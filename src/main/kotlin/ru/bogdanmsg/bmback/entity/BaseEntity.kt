@@ -5,7 +5,7 @@ import org.hibernate.proxy.HibernateProxy
 import java.util.*
 
 @MappedSuperclass
-abstract class Base {
+abstract class BaseEntity {
     @Id
     @Column(name = "id", nullable = false, unique = true)
     val id: UUID = UUID.randomUUID()
@@ -18,7 +18,7 @@ abstract class Base {
         val thisEffectiveClass =
             if (this is HibernateProxy) this.hibernateLazyInitializer.persistentClass else this.javaClass
         if (thisEffectiveClass != oEffectiveClass) return false
-        other as Base
+        other as BaseEntity
 
         return id == other.id
     }

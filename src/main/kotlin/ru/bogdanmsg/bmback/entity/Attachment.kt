@@ -14,4 +14,4 @@ class Attachment(
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     var type: AttachmentType,
-) : Base()
+) : BaseEntity()

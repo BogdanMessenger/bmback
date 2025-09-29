@@ -20,4 +20,4 @@ class Chat(
         inverseJoinColumns = [JoinColumn(name = "user_id")]
     )
     val users: MutableSet<User> = mutableSetOf(),
-) : Base()
+) : BaseEntity()

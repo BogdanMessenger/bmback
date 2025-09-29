@@ -14,4 +14,4 @@ class Reaction(
 
     @ManyToOne()
     val user: User
-) : Base()
+) : BaseEntity()

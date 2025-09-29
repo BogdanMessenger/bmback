@@ -33,4 +33,4 @@ class Message(
     @OneToMany(mappedBy = "message", cascade = [CascadeType.ALL])
     @JoinColumn(name = "message_id")
     val reations: MutableList<Reaction> = mutableListOf()
-) : Base()
+) : BaseEntity()
