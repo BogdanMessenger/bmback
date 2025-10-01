@@ -1,13 +1,11 @@
 package ru.bogdanmsg.bmback.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
+import jakarta.persistence.*
 import ru.bogdanmsg.bmback.enum.AttachmentType
 
 @Entity
-class Attachment(
+@Table(name = "attachment")
+class AttachmentEntity(
     @Column(nullable = false)
     var path: String,
 

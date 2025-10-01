@@ -1,7 +1,7 @@
 package ru.bogdanmsg.bmback.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
-import ru.bogdanmsg.bmback.entity.Avatar
+import ru.bogdanmsg.bmback.entity.AvatarEntity
 import java.util.*
 
-interface AvatarEntityRepository : JpaRepository<Avatar, UUID>
+interface AvatarEntityRepository : JpaRepository<AvatarEntity, UUID>

@@ -3,28 +3,31 @@ CREATE TABLE IF NOT EXISTS users
     id       UUID PRIMARY KEY,
     email    VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    nickname VARCHAR(255) NOT NULL,
-    tag      VARCHAR(255) NOT NULL UNIQUE
+    nickname VARCHAR(150) NOT NULL,
+    tag      VARCHAR(20) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS avatar
 (
     id             UUID PRIMARY KEY,
-    path           VARCHAR(255)                NOT NULL,
+    "path"           VARCHAR(255)                NOT NULL,
     uploaded_at           TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     user_id UUID REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS chat
 (
-    id UUID PRIMARY KEY
+    id UUID PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    created_by UUID REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS message
 (
     id             UUID PRIMARY KEY,
     send_at           TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    text           TEXT                NOT NULL,
+    payload           TEXT                NOT NULL,
     pinned         BOOLEAN                     NOT NULL,
     forward_id     UUID REFERENCES message(id),
     chat_id UUID REFERENCES chat(id) NOT NULL,
@@ -49,7 +52,7 @@ CREATE TABLE IF NOT EXISTS reaction
 CREATE TABLE IF NOT EXISTS attachment
 (
     id                UUID PRIMARY KEY,
-    path              VARCHAR(255) NOT NULL,
+    "path"             VARCHAR(255) NOT NULL,
     type              VARCHAR(10)  NOT NULL,
     message_id UUID REFERENCES message(id)
 );

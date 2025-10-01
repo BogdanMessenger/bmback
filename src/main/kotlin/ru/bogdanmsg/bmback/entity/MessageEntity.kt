@@ -7,30 +7,32 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Entity
-class Message(
+@Table(name = "message")
+class MessageEntity(
     @Column(nullable = false, updatable = false)
     val sendAt: LocalDateTime,
 
-    @Column(nullable = false)
+    @Column(name = "payload", nullable = false)
     var text: String,
 
     @Column(nullable = false)
     var pinned: Boolean,
 
     @OneToOne()
-    var forward: Message?,
+    var forward: MessageEntity?,
 
     @ManyToOne()
-    var chat: Chat,
+    @JoinColumn(name = "chat_id")
+    var chatEntity: ChatEntity,
 
     @ManyToOne()
-    val author: User,
+    @JoinColumn(name = "author_id")
+    val author: UserEntity,
 
     @JdbcTypeCode(SqlTypes.ARRAY)
     @Column(columnDefinition = "uuid[]")
     val attachments: Array<UUID> = emptyArray(),
 
-    @OneToMany(mappedBy = "message", cascade = [CascadeType.ALL])
-    @JoinColumn(name = "message_id")
-    val reations: MutableList<Reaction> = mutableListOf()
+    @OneToMany(mappedBy = "messageEntity", cascade = [CascadeType.ALL])
+    val reactionEntities: MutableList<ReactionEntity> = mutableListOf()
 ) : BaseEntity()
