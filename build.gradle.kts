@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "ru.bogdanmsg"
-version = "0.0.1-SNAPSHOT"
+version = "1.0.0-SNAPSHOT"
 description = "BmBack"
 
 java {
