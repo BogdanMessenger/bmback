@@ -1,14 +1,10 @@
 package ru.bogdanmsg.bmback.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import java.time.LocalDateTime
 
 @Entity
-@Table(name = "avatar")
+@Table(name = "avatars")
 class AvatarEntity(
     @Column(nullable = false)
     var path: String,
@@ -19,4 +15,8 @@ class AvatarEntity(
     @ManyToOne()
     @JoinColumn(name = "user_id")
     val userEntity: UserEntity,
+
+    @ManyToOne()
+    @JoinColumn(name = "chat_id")
+    val chatEntity: ChatEntity
 ) : BaseEntity()

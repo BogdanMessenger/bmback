@@ -1,23 +1,18 @@
 package ru.bogdanmsg.bmback.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.JoinTable
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 
 @Entity
-@Table(name = "reaction")
+@Table(name = "reactions")
 class ReactionEntity(
     @Column(nullable = false)
-    var symbol: String,
+    var payload: String,
 
     @ManyToOne()
     @JoinColumn(name = "message_id")
     val messageEntity: MessageEntity,
 
     @ManyToOne()
-    @JoinTable(name = "user_id")
+    @JoinColumn(name = "user_id")
     val userEntity: UserEntity
 ) : BaseEntity()

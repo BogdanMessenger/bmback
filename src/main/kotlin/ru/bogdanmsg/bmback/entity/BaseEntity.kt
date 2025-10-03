@@ -1,6 +1,8 @@
 package ru.bogdanmsg.bmback.entity
 
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Id
+import jakarta.persistence.MappedSuperclass
 import org.hibernate.proxy.HibernateProxy
 import java.util.*
 

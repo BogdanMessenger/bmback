@@ -1,22 +1,25 @@
 package ru.bogdanmsg.bmback.entity
 
 import jakarta.persistence.*
-import org.hibernate.annotations.JdbcTypeCode
-import org.hibernate.type.SqlTypes
 import java.time.LocalDateTime
-import java.util.*
 
 @Entity
-@Table(name = "message")
+@Table(name = "messages")
 class MessageEntity(
     @Column(nullable = false, updatable = false)
-    val sendAt: LocalDateTime,
+    val sentAt: LocalDateTime,
 
     @Column(name = "payload", nullable = false)
     var text: String,
 
     @Column(nullable = false)
     var pinned: Boolean,
+
+    @Column(nullable = false)
+    var hasAttachments: Boolean,
+
+    @Column(nullable = false)
+    var hasReactions: Boolean,
 
     @OneToOne()
     var forward: MessageEntity?,
@@ -29,9 +32,8 @@ class MessageEntity(
     @JoinColumn(name = "author_id")
     val author: UserEntity,
 
-    @JdbcTypeCode(SqlTypes.ARRAY)
-    @Column(columnDefinition = "uuid[]")
-    val attachments: Array<UUID> = emptyArray(),
+    @OneToMany(mappedBy = "messageEntity", fetch = FetchType.LAZY)
+    val attachmentEntities: MutableList<AttachmentEntity> = mutableListOf(),
 
     @OneToMany(mappedBy = "messageEntity", cascade = [CascadeType.ALL])
     val reactionEntities: MutableList<ReactionEntity> = mutableListOf()

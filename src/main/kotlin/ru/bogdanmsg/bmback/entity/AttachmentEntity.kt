@@ -4,10 +4,14 @@ import jakarta.persistence.*
 import ru.bogdanmsg.bmback.enum.AttachmentType
 
 @Entity
-@Table(name = "attachment")
+@Table(name = "attachments")
 class AttachmentEntity(
     @Column(nullable = false)
     var path: String,
+
+    @ManyToOne()
+    @JoinColumn(name = "message_id")
+    var messageEntity: MessageEntity,
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

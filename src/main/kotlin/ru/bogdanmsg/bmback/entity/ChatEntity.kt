@@ -4,20 +4,25 @@ import jakarta.persistence.*
 import java.time.LocalDateTime
 
 @Entity
-@Table(name = "chat")
+@Table(name = "chats")
 class ChatEntity(
+    var name: String?,
+
     @Column(nullable = false)
-    var name: String,
+    var isGroup: Boolean,
 
     @Column(nullable = false)
     val createdAt: LocalDateTime,
 
-    @ManyToOne()
-    @JoinColumn(name = "user_id")
-    val createdBy: UserEntity,
+    @OneToMany(mappedBy = "chatEntity", cascade = [CascadeType.ALL])
+    val avatarEntities: MutableList<AvatarEntity> = mutableListOf(),
 
     @OneToMany(mappedBy = "chatEntity", cascade = [CascadeType.ALL])
     val messageEntities: MutableList<MessageEntity> = mutableListOf(),
+
+    @ManyToOne()
+    @JoinColumn(name = "created_by")
+    val createdBy: UserEntity,
 
     @ManyToMany()
     @JoinTable(
