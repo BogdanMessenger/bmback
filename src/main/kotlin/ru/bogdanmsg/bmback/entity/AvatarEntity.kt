@@ -14,9 +14,9 @@ class AvatarEntity(
 
     @ManyToOne()
     @JoinColumn(name = "user_id")
-    val userEntity: UserEntity,
+    val user: UserEntity,
 
     @ManyToOne()
     @JoinColumn(name = "chat_id")
-    val chatEntity: ChatEntity
+    val chat: ChatEntity
 ) : BaseEntity()

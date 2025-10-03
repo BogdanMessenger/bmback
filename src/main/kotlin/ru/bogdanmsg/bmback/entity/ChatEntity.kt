@@ -14,11 +14,14 @@ class ChatEntity(
     @Column(nullable = false)
     val createdAt: LocalDateTime,
 
-    @OneToMany(mappedBy = "chatEntity", cascade = [CascadeType.ALL])
-    val avatarEntities: MutableList<AvatarEntity> = mutableListOf(),
+    @OneToOne(mappedBy = "chatWhereRoot")
+    val threadRoot: MessageEntity,
 
-    @OneToMany(mappedBy = "chatEntity", cascade = [CascadeType.ALL])
-    val messageEntities: MutableList<MessageEntity> = mutableListOf(),
+    @OneToMany(mappedBy = "chat", cascade = [CascadeType.ALL])
+    val avatars: MutableList<AvatarEntity> = mutableListOf(),
+
+    @OneToMany(mappedBy = "chat", cascade = [CascadeType.ALL])
+    val messages: MutableList<MessageEntity> = mutableListOf(),
 
     @ManyToOne()
     @JoinColumn(name = "created_by")
@@ -30,5 +33,5 @@ class ChatEntity(
         joinColumns = [JoinColumn(name = "chat_id")],
         inverseJoinColumns = [JoinColumn(name = "user_id")]
     )
-    val userEntities: MutableSet<UserEntity> = mutableSetOf(),
+    val users: MutableSet<UserEntity> = mutableSetOf(),
 ) : BaseEntity()

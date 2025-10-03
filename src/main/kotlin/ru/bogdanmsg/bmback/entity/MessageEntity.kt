@@ -22,19 +22,22 @@ class MessageEntity(
     var hasReactions: Boolean,
 
     @OneToOne()
+    val chatWhereRoot: ChatEntity,
+
+    @OneToOne()
     var forward: MessageEntity?,
 
     @ManyToOne()
     @JoinColumn(name = "chat_id")
-    var chatEntity: ChatEntity,
+    var chat: ChatEntity,
 
     @ManyToOne()
     @JoinColumn(name = "author_id")
     val author: UserEntity,
 
-    @OneToMany(mappedBy = "messageEntity", fetch = FetchType.LAZY)
-    val attachmentEntities: MutableList<AttachmentEntity> = mutableListOf(),
+    @OneToMany(mappedBy = "message")
+    val attachments: MutableList<AttachmentEntity> = mutableListOf(),
 
-    @OneToMany(mappedBy = "messageEntity", cascade = [CascadeType.ALL])
-    val reactionEntities: MutableList<ReactionEntity> = mutableListOf()
+    @OneToMany(mappedBy = "message", cascade = [CascadeType.ALL])
+    val reactions: MutableList<ReactionEntity> = mutableListOf()
 ) : BaseEntity()

@@ -21,18 +21,18 @@ class UserEntity(
     @Column(nullable = false)
     var lastEntry: LocalDateTime,
 
-    @OneToMany(mappedBy = "userEntity", cascade = [CascadeType.ALL])
-    val avatarEntities: MutableList<AvatarEntity> = mutableListOf(),
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
+    val avatars: MutableList<AvatarEntity> = mutableListOf(),
 
-    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
-    val messageEntities: MutableList<MessageEntity> = mutableListOf(),
+    @OneToMany(mappedBy = "author")
+    val messages: MutableList<MessageEntity> = mutableListOf(),
 
-    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
-    val reactionEntities: MutableList<ReactionEntity> = mutableListOf(),
+    @OneToMany(mappedBy = "user")
+    val reactions: MutableList<ReactionEntity> = mutableListOf(),
 
-    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "createdBy")
     var createdChats: MutableList<ChatEntity> = mutableListOf(),
 
-    @ManyToMany(mappedBy = "userEntities", fetch = FetchType.LAZY)
-    val chatEntities: MutableList<ChatEntity> = mutableListOf()
+    @ManyToMany(mappedBy = "users")
+    val chats: MutableList<ChatEntity> = mutableListOf()
 ) : BaseEntity()

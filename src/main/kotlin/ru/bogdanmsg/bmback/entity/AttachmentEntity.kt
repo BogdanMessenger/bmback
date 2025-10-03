@@ -11,7 +11,7 @@ class AttachmentEntity(
 
     @ManyToOne()
     @JoinColumn(name = "message_id")
-    var messageEntity: MessageEntity,
+    var message: MessageEntity,
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

@@ -6,13 +6,17 @@ import jakarta.persistence.*
 @Table(name = "reactions")
 class ReactionEntity(
     @Column(nullable = false)
-    var payload: String,
+    var position: Short,
+
+    @ManyToOne()
+    @JoinColumn(name = "reactions_handbook_id")
+    var reactionHandbook: ReactionHandbookEntity,
 
     @ManyToOne()
     @JoinColumn(name = "message_id")
-    val messageEntity: MessageEntity,
+    val message: MessageEntity,
 
     @ManyToOne()
     @JoinColumn(name = "user_id")
-    val userEntity: UserEntity
+    val user: UserEntity
 ) : BaseEntity()
