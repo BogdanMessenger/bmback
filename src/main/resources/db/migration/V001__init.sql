@@ -8,6 +8,14 @@ CREATE TABLE IF NOT EXISTS users
     last_entry TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS auth_codes
+(
+    id          uuid PRIMARY KEY,
+    user_id     uuid       NOT NULL REFERENCES users (id),
+    passcode    varchar(6) NOT NULL,
+    expire_date bigint     NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS chats
 (
     id             UUID PRIMARY KEY,
