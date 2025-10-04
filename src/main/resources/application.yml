@@ -3,7 +3,47 @@ spring:
     name: BmBack
   datasource:
     url: jdbc:postgresql://BM_POSTGRES:5432/postgres
+    # локальный запуск
+    # url: jdbc:postgresql://localhost:5444/postgres
     username: ${PG_USERNAME}
     password: ${PG_PASSWORD}
+    #username: pgadmin
+    #password: pgadmin
     driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USER}
+    password: ${MAIL_PASSWORD}
+    protocol: smtp
+    test-connection: true
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
+server:
+  port: ${API_PORT}
+
+app:
+  scheduled:
+    clean-unused-files: "0 0 3 * * ?"
+  auth:
+    admin-code: ${ADMIN_CODE}
+    password-life-time: ${PASSWORD_LIFE_TIME}
+    token:
+      access-life-time: ${ACCESS_LIFE_TIME}
+      refresh-life-time: ${REFRESH_LIFE_TIME}
+      secret: ${SECRET}
+  minio:
+    endpoint: http://minio:9000
+    # локальный запуск
+    # endpoint: http://localhost:9003
+    username: ${MINIO_USERNAME}
+    password: ${MINIO_PASSWORD}
+    bucket: user-avatars
