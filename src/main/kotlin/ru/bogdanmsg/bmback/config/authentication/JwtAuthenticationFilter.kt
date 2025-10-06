@@ -36,10 +36,10 @@ class JwtAuthenticationFilter(
             }
 
             val token = authHeader.substring(7)
-            val userPhoneNumber = jwtService.getUsername(token)
+            val userEmail = jwtService.getUsername(token)
 
-            if (userPhoneNumber.isNotEmpty() && SecurityContextHolder.getContext().authentication == null) {
-                val userDetails = userDetailsService.loadUserByUsername(userPhoneNumber)
+            if (userEmail.isNotEmpty() && SecurityContextHolder.getContext().authentication == null) {
+                val userDetails = userDetailsService.loadUserByUsername(userEmail)
 
                 if (jwtService.isTokenValid(token, userDetails)) {
                     val authToken = UsernamePasswordAuthenticationToken(userDetails, token, userDetails.authorities)
@@ -48,6 +48,16 @@ class JwtAuthenticationFilter(
                 } else return
             }
 
+//            if (!jwtService.isTokenExpired(token)) return
+//
+//            val userEmail = jwtService.getUsername(token)
+//            if (userEmail.isNotEmpty() && SecurityContextHolder.getContext().authentication == null) {
+//                val userDetails = userDetailsService.loadUserByUsername(userEmail)
+//
+//                val authToken = UsernamePasswordAuthenticationToken(userDetails, token, userDetails.authorities)
+//                authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
+//                SecurityContextHolder.getContext().authentication = authToken
+//            }
             filterChain.doFilter(request, response)
         } catch (ex: Exception) {
             logger.warn("Token validation ended with exception: ${ex.message}")

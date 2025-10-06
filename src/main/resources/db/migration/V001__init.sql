@@ -83,3 +83,6 @@ CREATE TABLE IF NOT EXISTS attachments
 
 CREATE INDEX idx_messages_chats_pinned ON messages (chat_id, sent_at DESC)
     WHERE pinned = TRUE;
+
+CREATE INDEX idx_users_email ON users (email);
+CREATE INDEX idx_avatars_email ON avatars (path);

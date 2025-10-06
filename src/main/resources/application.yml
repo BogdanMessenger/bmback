@@ -1,20 +1,11 @@
 spring:
   application:
     name: BmBack
-  datasource:
-    url: jdbc:postgresql://BM_POSTGRES:5432/postgres
-    # локальный запуск
-    # url: jdbc:postgresql://localhost:5444/postgres
-    username: ${PG_USERNAME}
-    password: ${PG_PASSWORD}
-    #username: pgadmin
-    #password: pgadmin
-    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: validate
   mail:
-    host: smtp.gmail.com
+    host: ${SMTP_HOST}
     port: 587
     username: ${MAIL_USER}
     password: ${MAIL_PASSWORD}
@@ -41,9 +32,38 @@ app:
       refresh-life-time: ${REFRESH_LIFE_TIME}
       secret: ${SECRET}
   minio:
-    endpoint: http://minio:9000
-    # локальный запуск
-    # endpoint: http://localhost:9003
     username: ${MINIO_USERNAME}
     password: ${MINIO_PASSWORD}
-    bucket: user-avatars
+    user-avatars-bucket: user-avatars-bucket
+
+---
+# запустить с параметром --spring.profiles.active=local
+# или через переменную окружения SPRING_PROFILES_ACTIVE=local
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:postgresql://localhost:5444/postgres
+    username: pgadmin
+    password: pgadmin
+    driver-class-name: org.postgresql.Driver
+app:
+  minio:
+    endpoint: http://localhost:9003
+
+---
+# запустить с параметром --spring.profiles.active=docker
+# или через переменную окружения SPRING_PROFILES_ACTIVE=docker
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: jdbc:postgresql://BM_POSTGRES:5432/postgres
+    username: ${PG_USERNAME}
+    password: ${PG_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+app:
+  minio:
+    endpoint: http://minio:9000

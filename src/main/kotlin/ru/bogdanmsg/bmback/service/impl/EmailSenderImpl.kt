@@ -3,12 +3,13 @@ package ru.bogdanmsg.bmback.service.impl
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.mail.MailProperties
+import org.springframework.core.io.ClassPathResource
 import org.springframework.mail.javamail.JavaMailSenderImpl
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import ru.bogdanmsg.bmback.service.EmailSender
-import ru.bogdanmsg.bmback.util.MailGenerator
+import java.nio.charset.StandardCharsets
 
 @Service
 internal class EmailSenderImpl(
@@ -27,10 +28,15 @@ internal class EmailSenderImpl(
         helper.setFrom(mailProperties.username)
         helper.setTo(to)
         helper.setSubject("$passCode - одноразовый код для входа")
-        helper.setText(MailGenerator.passwordMailTemplate(passCode), true) // true for HTML
+        helper.setText(passwordMailTemplate(passCode), true) // true for HTML
 
         mailSender.send(message)
-        log.info("Passcode mail has been sent")
-        log.debug("Passcode mail to $to has been sent")
+        log.info("Passcode mail $to has been sent")
+    }
+
+    private fun passwordMailTemplate(password: String): String {
+        val templateStream = ClassPathResource("templates/authcode-mail.html").inputStream
+        val template = templateStream.readBytes().toString(StandardCharsets.UTF_8)
+        return template.replace("{{password}}", password)
     }
 }

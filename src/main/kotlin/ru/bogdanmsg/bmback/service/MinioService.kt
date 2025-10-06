@@ -8,16 +8,20 @@ import io.minio.PutObjectArgs
 import io.minio.RemoveObjectArgs
 import io.minio.SetBucketPolicyArgs
 import jakarta.annotation.PostConstruct
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
+import org.springframework.core.io.ClassPathResource
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
-import ru.bogdanmsg.bmback.entity.AvatarEntity
-import ru.bogdanmsg.bmback.entity.UserEntity
 import ru.bogdanmsg.bmback.properties.MinioProperties
 import ru.bogdanmsg.bmback.repository.AvatarRepository
 import java.text.Normalizer
+import java.util.*
 
 @Service
 class MinioService(
@@ -38,72 +42,60 @@ class MinioService(
     private fun ensureBucketExists() {
         try {
             val bucketExists = minioClient
-                .bucketExists(BucketExistsArgs.builder().bucket(minioProperties.bucket).build())
+                .bucketExists(BucketExistsArgs.builder().bucket(minioProperties.userAvatarsBucket).build())
 
             if (!bucketExists) {
-                minioClient.makeBucket(MakeBucketArgs.builder().bucket(minioProperties.bucket).build())
-                log.info("MinIO Bucket '${minioProperties.bucket}' created")
+                minioClient.makeBucket(MakeBucketArgs.builder().bucket(minioProperties.userAvatarsBucket).build())
+                log.info("MinIO Bucket '${minioProperties.userAvatarsBucket}' created")
             } else {
-                log.info("MinIO Bucket '${minioProperties.bucket}' already exists")
+                log.info("MinIO Bucket '${minioProperties.userAvatarsBucket}' already exists")
             }
         } catch (e: Exception) {
-            log.error("Error checking/creating MinIO bucket: '${minioProperties.bucket}'", e)
+            log.error("Error checking/creating MinIO bucket: '${minioProperties.userAvatarsBucket}'", e)
         }
     }
 
     private fun setPublicAccess() {
-        val policyJson = """
-        {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Principal": "*",
-              "Action": ["s3:GetObject"],
-              "Resource": ["arn:aws:s3:::${minioProperties.bucket}/*"]
-            }
-          ]
-        }
-        """.trimIndent()
+        val policyJson = loadPolicyJson(minioProperties.userAvatarsBucket)
 
         minioClient.setBucketPolicy(
             SetBucketPolicyArgs.builder()
-                .bucket(minioProperties.bucket)
+                .bucket(minioProperties.userAvatarsBucket)
                 .config(policyJson)
                 .build()
         )
 
-        log.info("MinIO Bucket '${minioProperties.bucket}' is now public (Read-Only).")
+        log.info("MinIO Bucket '${minioProperties.userAvatarsBucket}' is now public (Read-Only).")
+    }
+
+    private fun loadPolicyJson(bucketName: String): String {
+        val resource = ClassPathResource("minio-public-policy.json")
+        val json = resource.inputStream.bufferedReader().use { it.readText() }
+        return json.replace("{{bucket_name}}", bucketName)
     }
 
     @Transactional
-    fun uploadFile(user: UserEntity, file: MultipartFile): AvatarEntity {
-        println("ИМЯ ФАЙЛА ${file.originalFilename}")
+    fun uploadFile(avatarId: UUID, file: MultipartFile): String {
         val sanitizeFile = if (file.originalFilename.isNullOrEmpty()) "file" else file.originalFilename!!
         val sanitizedFilename = sanitizeFilename(sanitizeFile)
 
-        val avatar = AvatarEntity().apply { this.user = user }
+        val fileName = "$avatarId-$sanitizedFilename"
 
-        val fileName = "${avatar.id}-$sanitizedFilename"
-
-        log.info("Uploading file '$fileName' to MinIO bucket '${minioProperties.bucket}'...")
+        log.info("Uploading file '$fileName' to MinIO bucket '${minioProperties.userAvatarsBucket}'...")
 
         minioClient.putObject(
             PutObjectArgs.builder()
-                .bucket(minioProperties.bucket)
+                .bucket(minioProperties.userAvatarsBucket)
                 .`object`(fileName)
                 .stream(file.inputStream, file.size, -1)
                 .contentType(file.contentType)
                 .build()
         )
 
-        val path = "${minioProperties.endpoint}/${minioProperties.bucket}/$fileName"
-        avatar.path = path
+        val path = "${minioProperties.endpoint}/${minioProperties.userAvatarsBucket}/$fileName"
 
-        avatarRepository.save(avatar)
-
-        log.info("File uploaded successfully: $fileName")
-        return avatar
+        log.info("File uploaded in MinIO successfully: $fileName")
+        return path
     }
 
     private fun sanitizeFilename(filename: String, maxLen: Int = 200): String {
@@ -120,30 +112,33 @@ class MinioService(
     }
 
     /**
-     * Задача будет выполняться каждый день в 03:00 ночи.
+     * Задача будет выполняться каждый день в 03:00 ночи. (НЕ ПРОТЕСТИРОВАНО)
      */
     @Scheduled(cron = "\${app.scheduled.clean-unused-files}")
     fun cleanUnusedFiles() {
         log.info("Starting cleanup of unused files...")
 
-        try {
-            val objects = minioClient.listObjects(
-                ListObjectsArgs.builder().bucket(minioProperties.bucket).build()
-            )
-
-            for (result in objects) {
-                val file = result.get()
-                val path = file.objectName()
-
-                val isFileUsed = avatarRepository.existsByPath(path)
-                if (!isFileUsed) {
-                    deleteFile(path)
+        runBlocking {
+            try {
+                val objects = minioClient.listObjects(
+                    ListObjectsArgs.builder().bucket(minioProperties.userAvatarsBucket).build()
+                )
+                coroutineScope {
+                    for (result in objects) {
+                        launch(Dispatchers.IO) {
+                            val file = result.get()
+                            val path = file.objectName()
+                            val isFileUsed = avatarRepository.existsByPath(path)
+                            if (!isFileUsed) {
+                                deleteFile(path)
+                            }
+                        }
+                    }
                 }
+            } catch (e: Exception) {
+                log.error("Error retrieving file list from MinIO", e)
             }
-        } catch (e: Exception) {
-            log.error("Error retrieving file list from MinIO", e)
         }
-
         log.info("Cleanup process completed!")
     }
 
@@ -151,7 +146,7 @@ class MinioService(
         try {
             minioClient.removeObject(
                 RemoveObjectArgs.builder()
-                    .bucket(minioProperties.bucket)
+                    .bucket(minioProperties.userAvatarsBucket)
                     .`object`(path)
                     .build()
             )

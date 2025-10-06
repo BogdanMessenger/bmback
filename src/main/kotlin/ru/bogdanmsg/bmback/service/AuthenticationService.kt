@@ -58,15 +58,15 @@ class AuthenticationService(
     }
 
     private fun performLogin(userEntity: UserEntity, response: HttpServletResponse): AuthenticationResponse {
-        val tokens = jwtService.generateTokens(userEntity)
-        setRefreshToken(response, tokens[1])
+        val (access, refresh) = jwtService.generateTokens(userEntity)
+        setRefreshToken(response, refresh)
 
         log.debug("User {} has been generate tokens", userEntity.id)
         log.info("Authorization successfully")
 
         return AuthenticationResponse(
             message = "Авторизация прошла успешно",
-            token = tokens[0],
+            token = access,
             user = userEntity.toUser()
         )
     }
@@ -156,15 +156,15 @@ class AuthenticationService(
         val userEntity = userRepository.findByEmail(jwtService.getUsername(token.substring(7)))
             ?: throw UserNotFoundException("Пользователь не существует")
 
-        val tokens = jwtService.generateTokens(userEntity)
+        val (access, refresh) = jwtService.generateTokens(userEntity)
 
-        setRefreshToken(response, tokens[1])
+        setRefreshToken(response, refresh)
 
         log.debug("Token for user {} has been refreshed", userEntity.id)
 
         return AuthenticationResponse(
             message = "Токены успешно обновлены",
-            token = tokens[0],
+            token = access,
             user = userEntity.toUser()
         )
     }

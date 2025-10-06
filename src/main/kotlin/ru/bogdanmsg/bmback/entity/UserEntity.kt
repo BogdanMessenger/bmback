@@ -3,6 +3,7 @@ package ru.bogdanmsg.bmback.entity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.ManyToMany
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
@@ -28,7 +29,7 @@ class UserEntity : BaseEntity(), UserDetails {
     @Column(nullable = false)
     lateinit var lastEntry: LocalDateTime
 
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     val avatars: MutableList<AvatarEntity> = mutableListOf()
 
     @OneToMany(mappedBy = "author")

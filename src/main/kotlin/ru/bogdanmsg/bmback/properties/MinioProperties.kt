@@ -7,5 +7,5 @@ data class MinioProperties(
     val endpoint: String,
     val username: String,
     val password: String,
-    val bucket: String,
+    val userAvatarsBucket: String,
 )

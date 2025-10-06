@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("jvm") version "2.0.21"
@@ -23,12 +23,17 @@ repositories {
     mavenCentral()
 }
 
+val coroutinesVersion = "1.7.3"
 val detektVersion = "1.23.8"
 val jwtVersion = "0.12.6"
-
+val minioVersion = "8.5.17"
+val openapiWebMvcVersion = "2.5.0"
+val openapiUiVersion = "1.7.0"
 dependencies {
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutinesVersion")
 
     // Web
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -49,7 +54,7 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
 
     //MINIO
-    implementation("io.minio:minio:8.5.7")
+    implementation("io.minio:minio:$minioVersion")
 
     // Mail
     implementation("org.springframework.boot:spring-boot-starter-mail")
@@ -58,8 +63,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     // Swagger
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
-    implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$openapiWebMvcVersion")
+    implementation("org.springdoc:springdoc-openapi-ui:$openapiUiVersion")
 
     // Detekt
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:$detektVersion")
@@ -72,10 +77,10 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions {
-        freeCompilerArgs += "-Xjsr305=strict"
-        jvmTarget = "21"
+kotlin {
+    compilerOptions {
+        freeCompilerArgs = freeCompilerArgs.get() + listOf("-Xjsr305=strict")
+        jvmTarget = JvmTarget.JVM_21
     }
 }
 

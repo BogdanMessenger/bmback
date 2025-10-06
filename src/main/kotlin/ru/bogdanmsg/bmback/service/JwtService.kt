@@ -20,14 +20,10 @@ class JwtService(
     private val signKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(authenticationProperties.token.secret))
 
     // Генератор токенов
-    fun generateTokens(userDetails: UserEntity): ArrayList<String> {
+    fun generateTokens(userDetails: UserEntity): Pair<String, String> {
         log.info("Token generating is began")
-        val tokens = ArrayList<String>()
 
-        tokens.add(generateAccessToken(userDetails))
-        tokens.add(generateRefreshToken(userDetails))
-
-        return tokens
+        return generateAccessToken(userDetails) to generateRefreshToken(userDetails)
     }
 
     private fun generateAccessToken(user: UserEntity): String =
@@ -47,7 +43,7 @@ class JwtService(
             .compact()
 
     // Валидаторы
-    private fun isTokenExpired(token: String): Boolean = extractClaims(token).expiration.before(Date())
+    fun isTokenExpired(token: String): Boolean = extractClaims(token).expiration.before(Date())
 
     fun isTokenValid(token: String, userDetails: UserDetails): Boolean {
         val username = extractClaims(token).subject

@@ -7,5 +7,6 @@ data class User(
     val email: String,
     val nickname: String,
     val tag: String,
-    val lastEntry: LocalDateTime
+    val lastEntry: LocalDateTime,
+    val avatars: List<Avatar>
 )
