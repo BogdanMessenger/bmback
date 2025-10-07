@@ -92,7 +92,7 @@ class MinioService(
                 .build()
         )
 
-        val path = "${minioProperties.endpoint}/${minioProperties.userAvatarsBucket}/$fileName"
+        val path = "${minioProperties.userAvatarsBucket}/$fileName"
 
         log.info("File uploaded in MinIO successfully: $fileName")
         return path
@@ -112,9 +112,15 @@ class MinioService(
     }
 
     /**
-     * Задача будет выполняться каждый день в 03:00 ночи. (НЕ ПРОТЕСТИРОВАНО)
+     * Задача будет выполняться каждый день в 03:00 ночи.
+     * Удаляется файл в 2 случаях
+     * 1) из MinIO если файла с таким path нет в таблицу avatars
+     * 2) из MunIO и таблицы avatars, если user_id и chat_id == NULL
+     *
+     * (ПРОТЕСТИРОВАНО, РАБОТАЕТ)
      */
     @Scheduled(cron = "\${app.scheduled.clean-unused-files}")
+    @Transactional
     fun cleanUnusedFiles() {
         log.info("Starting cleanup of unused files...")
 
@@ -126,11 +132,17 @@ class MinioService(
                 coroutineScope {
                     for (result in objects) {
                         launch(Dispatchers.IO) {
-                            val file = result.get()
-                            val path = file.objectName()
-                            val isFileUsed = avatarRepository.existsByPath(path)
-                            if (!isFileUsed) {
+                            val path = result.get().objectName()
+                            val avatarEntity = avatarRepository
+                                .findByPath("${minioProperties.userAvatarsBucket}/$path")
+
+                            if (avatarEntity == null) {
+                                log.info("Delete file with MinIO: $path")
                                 deleteFile(path)
+                            } else if (avatarEntity.user == null && avatarEntity.chat == null) {
+                                log.info("Delete file with MinIO and database, path: $path")
+                                deleteFile(path)
+                                avatarRepository.delete(avatarEntity)
                             }
                         }
                     }

@@ -8,6 +8,7 @@ import ru.bogdanmsg.bmback.entity.UserEntity
 fun UserEntity.toUser() = User(
     id = id.toString(),
     nickname = nickname,
+    fio = fio,
     tag = tag,
     email = email,
     lastEntry = lastEntry,

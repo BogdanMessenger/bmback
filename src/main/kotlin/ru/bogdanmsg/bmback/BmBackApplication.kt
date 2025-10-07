@@ -7,6 +7,7 @@ import ru.bogdanmsg.bmback.properties.AuthenticationProperties
 import ru.bogdanmsg.bmback.properties.MinioProperties
 
 @SpringBootApplication
+// @EnableScheduling - чтобы не работала джоба на очистку аватарок
 @EnableConfigurationProperties(
     AuthenticationProperties::class,
     MinioProperties::class

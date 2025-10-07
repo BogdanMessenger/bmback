@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://BM_POSTGRES:5432/postgres
+    username: ${PG_USERNAME}
+    password: ${PG_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+app:
+  minio:
+    endpoint: http://minio:9000

@@ -21,8 +21,7 @@ class JwtService(
 
     // Генератор токенов
     fun generateTokens(userDetails: UserEntity): Pair<String, String> {
-        log.info("Token generating is began")
-
+        log.info("Token generating is began fot user ${userDetails.id}")
         return generateAccessToken(userDetails) to generateRefreshToken(userDetails)
     }
 

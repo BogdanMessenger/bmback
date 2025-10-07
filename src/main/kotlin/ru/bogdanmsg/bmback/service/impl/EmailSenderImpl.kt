@@ -17,6 +17,12 @@ internal class EmailSenderImpl(
     private val mailProperties: MailProperties
 ) : EmailSender {
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
+    private val cachedTemplate: String by lazy {
+        ClassPathResource("templates/authcode-mail.html")
+            .inputStream
+            .readBytes()
+            .toString(StandardCharsets.UTF_8)
+    }
 
     @Async
     override fun sendPassCodeMessage(to: String, passCode: String) {
@@ -35,8 +41,6 @@ internal class EmailSenderImpl(
     }
 
     private fun passwordMailTemplate(password: String): String {
-        val templateStream = ClassPathResource("templates/authcode-mail.html").inputStream
-        val template = templateStream.readBytes().toString(StandardCharsets.UTF_8)
-        return template.replace("{{password}}", password)
+        return cachedTemplate.replace("{{password}}", password)
     }
 }

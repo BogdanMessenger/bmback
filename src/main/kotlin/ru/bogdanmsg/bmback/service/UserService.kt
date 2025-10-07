@@ -6,14 +6,15 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import ru.bogdanmsg.bmback.entity.AvatarEntity
 import ru.bogdanmsg.bmback.entity.UserEntity
+import ru.bogdanmsg.bmback.properties.MinioProperties
 import ru.bogdanmsg.bmback.repository.AvatarRepository
 
 @Service
 class UserService(
     private val minioService: MinioService,
     private val avatarRepository: AvatarRepository,
+    private val minioProperties: MinioProperties
 ) {
-
     val log = LoggerFactory.getLogger(UserService::class.java)
 
     @Transactional
@@ -27,6 +28,6 @@ class UserService(
         avatarRepository.save(avatar)
 
         log.info("Avatar uploaded successfully for user ${user.id}")
-        return avatar.path
+        return "${minioProperties.endpoint}/${avatar.path}"
     }
 }

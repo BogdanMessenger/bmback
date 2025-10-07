@@ -18,9 +18,9 @@ class AvatarEntity : BaseEntity() {
 
     @ManyToOne()
     @JoinColumn(name = "user_id")
-    lateinit var user: UserEntity
+    var user: UserEntity? = null
 
     @ManyToOne()
     @JoinColumn(name = "chat_id")
-    lateinit var chat: ChatEntity
+    var chat: ChatEntity? = null
 }

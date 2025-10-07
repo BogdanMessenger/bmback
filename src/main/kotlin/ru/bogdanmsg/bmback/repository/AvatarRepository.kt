@@ -6,4 +6,5 @@ import java.util.*
 
 interface AvatarRepository : JpaRepository<AvatarEntity, UUID> {
     fun existsByPath(path: String): Boolean
+    fun findByPath(path: String): AvatarEntity?
 }

@@ -23,8 +23,11 @@ class UserEntity : BaseEntity(), UserDetails {
     @Column(nullable = false)
     var nickname: String = ""
 
+    @Column(name = "fio", nullable = false)
+    var fio: String = ""
+
     @Column(unique = true, nullable = false)
-    var tag: String = id.toString()
+    var tag: String = id.toString().take(12)
 
     @Column(nullable = false)
     lateinit var lastEntry: LocalDateTime

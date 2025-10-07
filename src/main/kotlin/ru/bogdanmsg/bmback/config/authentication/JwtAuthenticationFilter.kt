@@ -47,17 +47,6 @@ class JwtAuthenticationFilter(
                     SecurityContextHolder.getContext().authentication = authToken
                 } else return
             }
-
-//            if (!jwtService.isTokenExpired(token)) return
-//
-//            val userEmail = jwtService.getUsername(token)
-//            if (userEmail.isNotEmpty() && SecurityContextHolder.getContext().authentication == null) {
-//                val userDetails = userDetailsService.loadUserByUsername(userEmail)
-//
-//                val authToken = UsernamePasswordAuthenticationToken(userDetails, token, userDetails.authorities)
-//                authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
-//                SecurityContextHolder.getContext().authentication = authToken
-//            }
             filterChain.doFilter(request, response)
         } catch (ex: Exception) {
             logger.warn("Token validation ended with exception: ${ex.message}")

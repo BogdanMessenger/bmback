@@ -119,9 +119,10 @@ class AuthenticationService(
         val userEntity = userRepository.save(
             UserEntity().apply {
                 email = request.email
-                tag = request.tag
-                passwordHash = passwordEncoder.encode(request.password)
                 nickname = request.nickname
+                fio = request.fio
+                request.tag?.let { tag = it }
+                passwordHash = passwordEncoder.encode(request.password)
                 lastEntry = LocalDateTime.now()
             }
         )
@@ -187,7 +188,11 @@ class AuthenticationService(
     }
 
     private fun validateCredentials(request: RegistrationRequest) {
-        if (request.email.isEmpty() || request.nickname.isEmpty() || request.password.isEmpty())
-            throw AuthenticationException("Необходимые поля для регистрации пустые")
+        val notValid = request.email.isEmpty() ||
+            request.nickname.isEmpty() ||
+            request.password.isEmpty() ||
+            request.fio.isEmpty()
+
+        if (notValid) throw AuthenticationException("Необходимые поля для регистрации пустые")
     }
 }

@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS users
     id         UUID PRIMARY KEY,
     email      VARCHAR(100)                NOT NULL UNIQUE,
     password   VARCHAR(255)                NOT NULL,
+    fio        VARCHAR(150)                NOT NULL,
     nickname   VARCHAR(150)                NOT NULL,
     tag        VARCHAR(20)                 NOT NULL UNIQUE,
     last_entry TIMESTAMP WITHOUT TIME ZONE NOT NULL
@@ -11,7 +12,7 @@ CREATE TABLE IF NOT EXISTS users
 CREATE TABLE IF NOT EXISTS auth_codes
 (
     id          uuid PRIMARY KEY,
-    user_id     uuid       NOT NULL REFERENCES users (id),
+    user_id     uuid       NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     passcode    varchar(6) NOT NULL,
     expire_date bigint     NOT NULL
 );
@@ -81,8 +82,7 @@ CREATE TABLE IF NOT EXISTS attachments
     message_id UUID REFERENCES messages (id)
 );
 
-CREATE INDEX idx_messages_chats_pinned ON messages (chat_id, sent_at DESC)
-    WHERE pinned = TRUE;
-
 CREATE INDEX idx_users_email ON users (email);
 CREATE INDEX idx_avatars_email ON avatars (path);
+CREATE INDEX idx_messages_chats_pinned ON messages (chat_id, sent_at DESC)
+WHERE pinned = TRUE;
