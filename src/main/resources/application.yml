@@ -1,9 +1,37 @@
 spring:
   application:
     name: BmBack
-  datasource:
-    url: jdbc:postgresql://BM_POSTGRES:5432/postgres
-    username: ${PG_USERNAME}
-    password: ${PG_PASSWORD}
-    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  mail:
+    host: ${SMTP_HOST}
+    port: 587
+    username: ${MAIL_USER}
+    password: ${MAIL_PASSWORD}
+    protocol: smtp
+    test-connection: true
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
+server:
+  port: ${API_PORT}
+
+app:
+  scheduled:
+    clean-unused-files: "0 0 3 * * ?"
+  auth:
+    admin-code: ${ADMIN_CODE}
+    password-life-time: ${PASSWORD_LIFE_TIME}
+    token:
+      access-life-time: ${ACCESS_LIFE_TIME}
+      refresh-life-time: ${REFRESH_LIFE_TIME}
+      secret: ${SECRET}
+  minio:
+    username: ${MINIO_USERNAME}
+    password: ${MINIO_PASSWORD}
+    user-avatars-bucket: user-avatars-bucket

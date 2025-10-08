@@ -1,0 +1,13 @@
+---
+# запустить с параметром --spring.profiles.active=local
+# или через переменную окружения SPRING_PROFILES_ACTIVE=local
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5444/postgres
+    username: pgadmin
+    password: pgadmin
+    driver-class-name: org.postgresql.Driver
+app:
+  minio:
+    endpoint: http://localhost:9003

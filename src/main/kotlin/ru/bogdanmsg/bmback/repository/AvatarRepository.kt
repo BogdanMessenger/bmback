@@ -4,4 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import ru.bogdanmsg.bmback.entity.AvatarEntity
 import java.util.*
 
-interface AvatarEntityRepository : JpaRepository<AvatarEntity, UUID>
+interface AvatarRepository : JpaRepository<AvatarEntity, UUID> {
+    fun existsByPath(path: String): Boolean
+    fun findByPath(path: String): AvatarEntity?
+}

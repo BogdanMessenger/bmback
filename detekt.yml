@@ -1,0 +1,61 @@
+formatting:
+  autoCorrect: true
+  FunctionSignature:
+    forceMultilineWhenParameterCountGreaterOrEqualThan: 4
+  MultiLineIfElse:
+    active: false
+naming:
+  NonBooleanPropertyPrefixedWithIs:
+    active: true
+  BooleanPropertyNaming:
+    active: true
+  LambdaParameterNaming:
+    active: true
+potential-bugs:
+  DontDowncastCollectionTypes:
+    active: true
+complexity:
+  LongParameterList:
+    constructorThreshold: 8
+    ignoreDataClasses: true
+performance:
+  CouldBeSequence:
+    active: true
+  SpreadOperator:
+    active: false
+style:
+  MagicNumber:
+    ignoreLocalVariableDeclaration: true
+    ignoreRanges: true
+    ignorePropertyDeclaration: true
+  DataClassContainsFunctions:
+    active: true
+  UseEmptyCounterpart:
+    active: true
+  UseIfEmptyOrIfBlank:
+    active: true
+  UnnecessaryBackticks:
+    active: true
+  DataClassShouldBeImmutable:
+    active: true
+  ClassOrdering:
+    active: true
+  CascadingCallWrapping:
+    active: true
+  CanBeNonNullable:
+    active: true
+  AlsoCouldBeApply:
+    active: true
+  SpacingBetweenPackageAndImports:
+    active: true
+  UnusedImports:
+    active: true
+  ThrowsCount:
+    max: 5
+  ReturnCount:
+    max: 5
+exceptions:
+  TooGenericExceptionCaught:
+    active: false
+  TooGenericExceptionThrown:
+    active: false
